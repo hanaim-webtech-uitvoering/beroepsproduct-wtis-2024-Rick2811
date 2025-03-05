@@ -1,21 +1,54 @@
 <?php
     session_start();
-    
-    // Simpele gebruikersauthenticatie (voor demonstratie)
+
+    // Database configuratie
+    $DB_HOST = "database_server"; // Pas dit aan
+    $DB_NAME = "pizzeria";        // Jouw database naam
+    $DB_USER = "sa";              // SQL Server SA-gebruiker
+    $DB_PASS = "abc123!@#";       // Jouw SQL Server SA-wachtwoord
+
+    try {
+        // PDO verbinding met SQL Server en SSL-verificatie uitschakelen
+        $pdo = new PDO("sqlsrv:server=$DB_HOST;Database=$DB_NAME;Encrypt=no", $DB_USER, $DB_PASS);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e) {
+        die("Databaseverbinding mislukt: " . $e->getMessage());
+    }
+
+    $foutmelding = "";
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $gebruikersnaam = $_POST['gebruikersnaam'] ?? '';
-        $wachtwoord = $_POST['wachtwoord'] ?? '';
-        
-        // Dummy gegevens (in een echte app haal je dit uit een database)
-        $correcte_gebruiker = 'admin';
-        $correcte_wachtwoord = 'pizza123';
-        
-        if ($gebruikersnaam === $correcte_gebruiker && $wachtwoord === $correcte_wachtwoord) {
-            $_SESSION['ingelogd'] = true;
-            header('Location: dashboard.php'); // Verwijzen naar een dashboard of homepage
-            exit();
+        $gebruikersnaam = trim($_POST['gebruikersnaam'] ?? '');
+        $wachtwoord = trim($_POST['wachtwoord'] ?? '');
+
+        if (!empty($gebruikersnaam) && !empty($wachtwoord)) {
+            // Controleer of de gebruiker bestaat in de database
+            $stmt = $pdo->prepare("SELECT username, password, role FROM [User] WHERE username = :username");
+            $stmt->execute(['username' => $gebruikersnaam]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                // Tijdelijke oplossing: Vergelijk platte tekst wachtwoorden
+                if ($wachtwoord === $user['password']) {
+                    $_SESSION['ingelogd'] = true;
+                    $_SESSION['gebruiker'] = $gebruikersnaam;
+                    $_SESSION['rol'] = $user['role'];
+
+                    // Redirect op basis van de rol
+                    if ($user['role'] === 'Personnel') {
+                        header('Location: workerspage.php');
+                    } else {
+                        header('Location: customerspage.php');
+                    }
+                    exit();
+                } else {
+                    $foutmelding = "❌ Ongeldige gebruikersnaam of wachtwoord!";
+                }
+            } else {
+                $foutmelding = "❌ Ongeldige gebruikersnaam of wachtwoord!";
+            }
         } else {
-            $foutmelding = 'Ongeldige gebruikersnaam of wachtwoord';
+            $foutmelding = "⚠ Vul alle velden in.";
         }
     }
 ?>
@@ -38,8 +71,8 @@
     
     <div class="login-container">
         <h2>Inloggen</h2>
-        <?php if (isset($foutmelding)): ?>
-            <p class="error"> <?php echo $foutmelding; ?> </p>
+        <?php if (!empty($foutmelding)): ?>
+            <p class="error"> <?php echo htmlspecialchars($foutmelding); ?> </p>
         <?php endif; ?>
         <form action="" method="POST">
             <label for="gebruikersnaam">Gebruikersnaam:</label>
