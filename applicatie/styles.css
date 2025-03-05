@@ -105,3 +105,40 @@ body {
     color: red;
     font-weight: bold;
 }
+
+.bestelling-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.bestelling-box {
+    border: 2px solid #333;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    width: 300px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.bestelling-box p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.bestelling-box strong {
+    font-weight: bold;
+}
+
+.bestelling-box {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bestelling-box:hover {
+    transform: scale(1.05);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+}
