@@ -32,6 +32,13 @@
     // Haal actieve bestellingen op
     $stmt = $pdo->query("SELECT order_id, client_name, datetime, status FROM Pizza_Order");
     $bestellingen = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Status omzetten naar tekst
+    $statusTekst = [
+        1 => "Aan begonnen",
+        2 => "Ready to go",
+        3 => "Onderweg"
+    ];
 ?>
 
 <!DOCTYPE html>
@@ -57,11 +64,11 @@
         <div class="bestelling-container">
             <?php foreach ($bestellingen as $bestelling): ?>
                 <div class="bestelling-balk">
-                <div class="bestelling-box" onclick="window.location.href='order.php?order_id=<?php echo $bestelling['order_id']; ?>'"> 
+                    <div class="bestelling-box" onclick="window.location.href='order.php?order_id=<?php echo $bestelling['order_id']; ?>'">
                         <p><strong>Bestelnummer:</strong> <?php echo htmlspecialchars($bestelling['order_id']); ?></p>
                         <p><strong>Klantnaam:</strong> <?php echo htmlspecialchars($bestelling['client_name']); ?></p>
                         <p><strong>Datum & Tijd:</strong> <?php echo htmlspecialchars($bestelling['datetime']); ?></p>
-                        <p><strong>Status:</strong> <?php echo htmlspecialchars($bestelling['status']); ?></p>
+                        <p><strong>Status:</strong> <?php echo $statusTekst[$bestelling['status']] ?? "Onbekend"; ?></p>
                     </div>
                 </div>
             <?php endforeach; ?>
