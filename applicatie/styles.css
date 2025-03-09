@@ -178,7 +178,7 @@ body {
 .footer p {
     position: relative;
     z-index: 1; /* Zorgt ervoor dat de tekst bovenop de groene balk blijft */
-    color: white; /* Zorgt voor goede leesbaarheid */
+    color: white;
 }
     
 
