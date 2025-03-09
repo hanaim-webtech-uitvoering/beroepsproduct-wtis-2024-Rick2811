@@ -75,4 +75,8 @@
         </div>
     </div>
 </body>
+<footer class="footer">
+        <p>&copy; 2025 Pizzeria di Rick | <a href="privacystatement.php">Privacyverklaring</a></p>
+    </footer>
+
 </html>

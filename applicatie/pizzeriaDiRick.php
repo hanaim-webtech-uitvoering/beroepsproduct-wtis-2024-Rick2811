@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="navbar">
+    <div class="navbar">
         <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
         <button onclick="alert('Menu geopend!')">Menu</button>
         <button onclick="alert('Bestelling plaatsen...')">Bestelling Plaatsen</button>
@@ -24,7 +24,7 @@
         <div class="slide"><img src="images/pizza2.jpg" alt="Pizza 2"></div>
         <div class="slide"><img src="images/pizza3.jpg" alt="Pizza 3"></div>
     </div>
-    
+
     <script>
         let slideIndex = 0;
         function showSlides() {
@@ -37,5 +37,10 @@
         }
         showSlides();
     </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Pizzeria di Rick | <a href="privacystatement.php">Privacyverklaring</a></p>
+    </footer>
 </body>
 </html>

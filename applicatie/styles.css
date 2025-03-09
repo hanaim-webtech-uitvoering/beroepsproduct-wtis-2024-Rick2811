@@ -142,3 +142,71 @@ body {
     transform: scale(1.05);
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
 }
+
+
+.footer {
+    background-color: #df0000   ;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer a {
+    color: #ffffff;
+    text-decoration: none;
+    z-index: 1000   ;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 50px; /* Pas de hoogte aan zoals gewenst */
+    background-color: #228B22; /* Groen zoals in de navigatiebalk */
+    position: absolute;
+    top: 16px;
+    left: 0;
+}
+
+.footer p {
+    position: relative;
+    z-index: 1; /* Zorgt ervoor dat de tekst bovenop de groene balk blijft */
+    color: white; /* Zorgt voor goede leesbaarheid */
+}
+    
+
+/* Privacyverklaring container */
+.privacy-container {
+    width: 60%;
+    margin: 30px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Zorgt ervoor dat alle tekst binnen deze container gecentreerd is */
+    padding-bottom: 100px; /* Extra ruimte onderaan */
+}
+
+.privacy-container h2, 
+.privacy-container h3, 
+.privacy-container p, 
+.privacy-container ul {
+    text-align: center; /* Zorgt ervoor dat ook alle losse elementen gecentreerd zijn */
+}
+
+.privacy-container ul {
+    list-style-type: none; /* Verwijdert standaard bullets */
+    padding: 0;
+}
+
+
+.dashboard-container{
+    padding-bottom: 100px;
+}
