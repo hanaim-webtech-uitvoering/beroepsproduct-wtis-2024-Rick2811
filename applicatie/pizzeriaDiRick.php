@@ -12,7 +12,7 @@
 <body>
     <div class="navbar">
         <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
-        <button onclick="alert('Menu geopend!')">Menu</button>
+        <button onclick="window.location.href='Menu.php'">Menu</button>
         <button onclick="alert('Bestelling plaatsen...')">Bestelling Plaatsen</button>
         <button onclick="window.location.href='inloggen.php'">Inloggen</button>
     </div>

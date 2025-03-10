@@ -124,62 +124,63 @@ ALTER TABLE [Pizza_Order_Product] ADD FOREIGN KEY ([product_name]) REFERENCES [P
   ('yabebe', 'wachtwoord', 'Yonas', 'Abebe', 'Personnel'), 
   ('ngebre', 'wachtwoord', 'Nardos', 'Gebre', 'Personnel'); 
 
--- Insert statements for product types
-INSERT INTO ProductType ([name]) VALUES
-('Pizza'),
-('Maaltijd'),
-('Specerij'),
-('Voorgerecht'),
-('Drank');
+  -- Insert statements for product types
+  INSERT INTO ProductType ([name]) VALUES
+  ('Pizza'),
+  ('Maaltijd'),
+  ('Specerij'),
+  ('Voorgerecht'),
+  ('Drank');
 
--- Insert statements for ingredients
-INSERT INTO Ingredient ([name]) VALUES
-('Tomaat'),
-('Kaas'),
-('Pepperoni'),
-('Champignon'),
-('Ui'),
-('Sla'),
-('Spek'),
-('Saus');
+  -- Insert statements for ingredients
+  INSERT INTO Ingredient ([name]) VALUES
+  ('Tomaat'),
+  ('Kaas'),
+  ('Pepperoni'),
+  ('Champignon'),
+  ('Ui'),
+  ('Sla'),
+  ('Spek'),
+  ('Saus');
 
--- Insert statements for products
-INSERT INTO Product ([name], price, type_id) VALUES
-('Margherita Pizza', 9.99, 'Pizza'),
-('Pepperoni Pizza', 11.99, 'Pizza'),
-('Vegetarische Pizza', 10.99, 'Pizza'),
-('Hawaiian Pizza', 12.99, 'Pizza'),
-('Combinatiemaaltijd', 15.99, 'Maaltijd'),
-('Knoflookbrood', 4.99, 'Voorgerecht'),
-('Coca Cola', 2.49, 'Drank'),
-('Sprite', 2.49, 'Drank');
+  -- Insert statements for products
+  INSERT INTO Product ([name], price, type_id) VALUES
+  ('Margherita Pizza', 9.99, 'Pizza'),
+  ('Pepperoni Pizza', 11.99, 'Pizza'),
+  ('Vegetarische Pizza', 10.99, 'Pizza'),
+  ('Hawaiian Pizza', 12.99, 'Pizza'),
+  ('Combinatiemaaltijd', 15.99, 'Maaltijd'),
+  ('Knoflookbrood', 4.99, 'Voorgerecht'),
+  ('Coca Cola', 2.49, 'Drank'),
+  ('Sprite', 2.49, 'Drank'),
+  ('Fristi', 0.99, 'Drank');
 
--- Insert statements for product-ingredient relationships
-INSERT INTO Product_Ingredient (product_name, ingredient_name) VALUES
-('Margherita Pizza', 'Tomaat'), -- Margherita Pizza met Tomaat
-('Margherita Pizza', 'Kaas'), -- Margherita Pizza met Kaas
-('Pepperoni Pizza', 'Tomaat'), -- Pepperoni Pizza met Tomaat
-('Pepperoni Pizza', 'Kaas'), -- Pepperoni Pizza met Kaas
-('Pepperoni Pizza', 'Pepperoni'), -- Pepperoni Pizza met Pepperoni
-('Vegetarische Pizza', 'Tomaat'), -- Vegetarische Pizza met Tomaat
-('Vegetarische Pizza', 'Kaas'), -- Vegetarische Pizza met Kaas
-('Vegetarische Pizza', 'Champignon'), -- Vegetarische Pizza met Champignon
-('Vegetarische Pizza', 'Ui'), -- Vegetarische Pizza met Ui
-('Hawaiian Pizza', 'Tomaat'), -- Hawaiian Pizza met Tomaat
-('Hawaiian Pizza', 'Kaas'), -- Hawaiian Pizza met Kaas
-('Hawaiian Pizza', 'Pepperoni'), -- Hawaiian Pizza met Pepperoni
-('Hawaiian Pizza', 'Ui'), -- Hawaiian Pizza met Ui
-('Hawaiian Pizza', 'Sla'), -- Hawaiian Pizza met Sla
-('Hawaiian Pizza', 'Spek'), -- Hawaiian Pizza met Spek
-('Hawaiian Pizza', 'Saus'), -- Hawaiian Pizza met Saus
-('Combinatiemaaltijd', 'Tomaat'), -- Combinatiemaaltijd met Tomaat
-('Combinatiemaaltijd', 'Kaas'), -- Combinatiemaaltijd met Kaas
-('Combinatiemaaltijd', 'Pepperoni'), -- Combinatiemaaltijd met Pepperoni
-('Combinatiemaaltijd', 'Champignon'), -- Combinatiemaaltijd met Champignon
-('Combinatiemaaltijd', 'Ui'), -- Combinatiemaaltijd met Ui
-('Combinatiemaaltijd', 'Sla'), -- Combinatiemaaltijd met Sla
-('Combinatiemaaltijd', 'Spek'), -- Combinatiemaaltijd met Spek
-('Combinatiemaaltijd', 'Saus'); -- Combinatiemaaltijd met Saus
+  -- Insert statements for product-ingredient relationships
+  INSERT INTO Product_Ingredient (product_name, ingredient_name) VALUES
+  ('Margherita Pizza', 'Tomaat'), -- Margherita Pizza met Tomaat
+  ('Margherita Pizza', 'Kaas'), -- Margherita Pizza met Kaas
+  ('Pepperoni Pizza', 'Tomaat'), -- Pepperoni Pizza met Tomaat
+  ('Pepperoni Pizza', 'Kaas'), -- Pepperoni Pizza met Kaas
+  ('Pepperoni Pizza', 'Pepperoni'), -- Pepperoni Pizza met Pepperoni
+  ('Vegetarische Pizza', 'Tomaat'), -- Vegetarische Pizza met Tomaat
+  ('Vegetarische Pizza', 'Kaas'), -- Vegetarische Pizza met Kaas
+  ('Vegetarische Pizza', 'Champignon'), -- Vegetarische Pizza met Champignon
+  ('Vegetarische Pizza', 'Ui'), -- Vegetarische Pizza met Ui
+  ('Hawaiian Pizza', 'Tomaat'), -- Hawaiian Pizza met Tomaat
+  ('Hawaiian Pizza', 'Kaas'), -- Hawaiian Pizza met Kaas
+  ('Hawaiian Pizza', 'Pepperoni'), -- Hawaiian Pizza met Pepperoni
+  ('Hawaiian Pizza', 'Ui'), -- Hawaiian Pizza met Ui
+  ('Hawaiian Pizza', 'Sla'), -- Hawaiian Pizza met Sla
+  ('Hawaiian Pizza', 'Spek'), -- Hawaiian Pizza met Spek
+  ('Hawaiian Pizza', 'Saus'), -- Hawaiian Pizza met Saus
+  ('Combinatiemaaltijd', 'Tomaat'), -- Combinatiemaaltijd met Tomaat
+  ('Combinatiemaaltijd', 'Kaas'), -- Combinatiemaaltijd met Kaas
+  ('Combinatiemaaltijd', 'Pepperoni'), -- Combinatiemaaltijd met Pepperoni
+  ('Combinatiemaaltijd', 'Champignon'), -- Combinatiemaaltijd met Champignon
+  ('Combinatiemaaltijd', 'Ui'), -- Combinatiemaaltijd met Ui
+  ('Combinatiemaaltijd', 'Sla'), -- Combinatiemaaltijd met Sla
+  ('Combinatiemaaltijd', 'Spek'), -- Combinatiemaaltijd met Spek
+  ('Combinatiemaaltijd', 'Saus'); -- Combinatiemaaltijd met Saus
 
 -- Insert statements for pizza orders
 INSERT INTO [Pizza_Order] (client_username, client_name, personnel_username, datetime, status, address) VALUES
