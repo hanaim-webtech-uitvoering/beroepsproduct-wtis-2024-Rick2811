@@ -67,7 +67,7 @@ foreach ($productIngredients as $pi) {
                     <th>Naam</th>
                     <th>Prijs (€)</th>
                     <th>Type</th>
-                    <th>Standaard Ingrediënten</th>
+                    <th>Eventuele extra ingrediënten</th>
                     <th>Extra Ingrediënten</th>
                     <th>Toevoegen</th>
                 </tr>
@@ -89,14 +89,20 @@ foreach ($productIngredients as $pi) {
                             : "Geen ingrediënten" ?>
                     </td>
                     <td>
-                        <select class="extra-ingredients" data-name="<?= htmlspecialchars($product['name']) ?>">
-                            <option value="">-- Kies extra --</option>
-                            <?php foreach ($ingredients as $ingredient) : ?>
-                                <option value="<?= htmlspecialchars($ingredient['name']) ?>">
-                                    <?= htmlspecialchars($ingredient['name']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <?php if ($product['type'] == 'Pizza' || $product['type'] == 'Maaltijd'): ?>
+                            <select class="extra-ingredients" data-name="<?= htmlspecialchars($product['name']) ?>">
+                                <option value="">-- Kies extra --</option>
+                                <?php 
+                                if (isset($ingredientsPerProduct[$product['name']])) {
+                                    foreach ($ingredientsPerProduct[$product['name']] as $ingredient) {
+                                        echo "<option value='" . htmlspecialchars($ingredient) . "'>" . htmlspecialchars($ingredient) . "</option>";
+                                    }
+                                }
+                                ?>
+                            </select>
+                        <?php else: ?>
+                            <span>Geen extra ingrediënten</span>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <button class="add-to-cart" data-name="<?= htmlspecialchars($product['name']) ?>" 
@@ -112,6 +118,12 @@ foreach ($productIngredients as $pi) {
             <h2>Winkelwagen</h2>
             <ul id="cart-list"></ul>
             <p><strong>Totaalprijs:</strong> €<span id="total-price">0.00</span></p>
+
+            <!-- Formulier voor afrekenen -->
+            <form id="checkout-form" action="orderCustomer.php" method="post">
+                <input type="hidden" name="cart-data" id="cart-data">
+                <button type="submit" id="checkout-button" style="display: none;">Afrekenen</button>
+            </form>
         </div>
     </div>
 
@@ -128,7 +140,7 @@ foreach ($productIngredients as $pi) {
                 let productName = this.getAttribute('data-name');
                 let productPrice = parseFloat(this.getAttribute('data-price'));
                 let extraIngredientSelect = document.querySelector(`.extra-ingredients[data-name='${productName}']`);
-                let extraIngredient = extraIngredientSelect.value ? extraIngredientSelect.value : "";
+                let extraIngredient = extraIngredientSelect ? extraIngredientSelect.value : "";
 
                 let existingProduct = cart.find(item => item.name === productName && item.extra === extraIngredient);
                 if (existingProduct) {
@@ -144,8 +156,10 @@ foreach ($productIngredients as $pi) {
         function updateCart() {
             let cartList = document.getElementById('cart-list');
             let totalPriceElement = document.getElementById('total-price');
+            let checkoutButton = document.getElementById('checkout-button');
+            let cartDataInput = document.getElementById('cart-data');
+            
             cartList.innerHTML = ""; 
-
             let totalPrice = 0;
 
             cart.forEach(item => {
@@ -160,14 +174,11 @@ foreach ($productIngredients as $pi) {
 
             totalPriceElement.textContent = totalPrice.toFixed(2);
 
-            document.querySelectorAll('.remove-item').forEach(button => {
-                button.addEventListener('click', function() {
-                    let productName = this.getAttribute('data-name');
-                    let extraIngredient = this.getAttribute('data-extra');
-                    cart = cart.filter(item => !(item.name === productName && item.extra === extraIngredient));
-                    updateCart();
-                });
-            });
+            // Toon/verberg afreken-knop
+            checkoutButton.style.display = cart.length > 0 ? "block" : "none";
+
+            // Zet de winkelwagen data in het verborgen inputveld als JSON
+            cartDataInput.value = JSON.stringify(cart);
         }
     </script>
 
