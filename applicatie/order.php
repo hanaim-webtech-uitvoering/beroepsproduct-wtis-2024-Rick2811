@@ -2,21 +2,60 @@
 session_start();
 
 // Controleer of de gebruiker is ingelogd
-$ingelogd = isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true;
-$gebruikersnaam = $ingelogd ? $_SESSION['gebruiker'] : "Gast";
+if (!isset($_SESSION['ingelogd']) || !$_SESSION['ingelogd']) {
+    header('Location: inloggen.php');
+    exit();
+}
 
-// ✅ Controleer of een adres is opgeslagen vanuit de `Pizza_Order` tabel
-$heeftAdres = $ingelogd && isset($_SESSION['adres']) && !empty($_SESSION['adres']);
+// Database configuratie
+$DB_HOST = "database_server";
+$DB_NAME = "pizzeria";
+$DB_USER = "sa";
+$DB_PASS = "abc123!@#";
 
-// ✅ Debugging: Toon de volledige sessie om te controleren wat er gebeurt
-echo "<pre>";
-print_r($_SESSION);
-echo "</pre>";
+try {
+    $pdo = new PDO("sqlsrv:server=$DB_HOST;Database=$DB_NAME;Encrypt=no", $DB_USER, $DB_PASS);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Databaseverbinding mislukt: " . $e->getMessage());
+}
 
-// Controleer of een bestelling in de winkelwagen zit
-if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-    echo "<script>alert('Je winkelwagen is leeg!'); window.location.href='menu.php';</script>";
-    exit;
+// Haal order_id op uit GET-parameter
+if (!isset($_GET['order_id'])) {
+    die("Ongeldige bestelling.");
+}
+$order_id = $_GET['order_id'];
+
+// Haal bestellingsinformatie op
+$stmt = $pdo->prepare("SELECT client_name, address, datetime, status FROM Pizza_Order WHERE order_id = :order_id");
+$stmt->execute(['order_id' => $order_id]);
+$bestelling = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$bestelling) {
+    die("Bestelling niet gevonden.");
+}
+
+// Haal producten op die bij deze bestelling horen
+$stmt = $pdo->prepare("SELECT p.name, pop.quantity FROM Pizza_Order_Product pop 
+                       JOIN Product p ON pop.product_name = p.name
+                       WHERE pop.order_id = :order_id");
+$stmt->execute(['order_id' => $order_id]);
+$producten = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Status opties
+$statusOpties = [
+    1 => "Aan begonnen",
+    2 => "Ready to go",
+    3 => "Onderweg"
+];
+
+// Als de status wordt gewijzigd
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
+    $nieuweStatus = $_POST['status'];
+    $updateStmt = $pdo->prepare("UPDATE Pizza_Order SET status = :status WHERE order_id = :order_id");
+    $updateStmt->execute(['status' => $nieuweStatus, 'order_id' => $order_id]);
+    header("Location: orderDetails.php?order_id=" . $order_id);
+    exit();
 }
 ?>
 
@@ -25,47 +64,38 @@ if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bestelling Overzicht | Pizzeria di Rick</title>
+    <title>Bestelling Details | Pizzeria di Rick</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-    <!-- Navbar -->
     <div class="navbar">
-        <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
-        <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="window.location.href='order.php'">Bestelling Plaatsen</button>
-
-        <?php if ($ingelogd): ?>
-            <button onclick="window.location.href='profiel.php'">👤 <?= htmlspecialchars($gebruikersnaam) ?></button>
-            <button onclick="window.location.href='uitloggen.php'">Uitloggen</button>
-        <?php else: ?>
-            <button onclick="window.location.href='inloggen.php'">Inloggen</button>
-        <?php endif; ?>
+        <button onclick="window.location.href='workerspage.php'">⬅ Terug naar overzicht</button>
     </div>
 
     <div class="container">
-        <h2>Jouw Bestelling</h2>
+        <h2>Bestelling #<?= htmlspecialchars($order_id) ?></h2>
+        <p><strong>Klant:</strong> <?= htmlspecialchars($bestelling['client_name']) ?></p>
+        <p><strong>Adres:</strong> <?= htmlspecialchars($bestelling['address']) ?></p>
+        <p><strong>Datum & Tijd:</strong> <?= htmlspecialchars($bestelling['datetime']) ?></p>
 
-        <p><strong>Totaalprijs:</strong> €<?= number_format(array_sum(array_column($_SESSION['cart'], 'price')), 2, ',', '.') ?></p>
+        <h3>Bestelde Producten</h3>
+        <ul>
+            <?php foreach ($producten as $product): ?>
+                <li><?= htmlspecialchars($product['quantity']) ?>x <?= htmlspecialchars($product['name']) ?></li>
+            <?php endforeach; ?>
+        </ul>
 
-        <?php if ($heeftAdres): ?>
-            <p>📍 <strong>Bezorgadres:</strong> <?= htmlspecialchars($_SESSION['adres']) ?></p>
-            <form action="bestelling_bevestigd.php" method="post">
-                <button type="submit">✅ Bestelling Plaatsen</button>
-            </form>
-        <?php else: ?>
-            <h3>⚠ Vul je bezorgadres in</h3>
-            <form action="bestelling_bevestigd.php" method="post">
-                <label for="naam">Naam:</label>
-                <input type="text" name="naam" required>
-                
-                <label for="adres">Adres:</label>
-                <input type="text" name="adres" required>
-
-                <button type="submit">✅ Bestelling Plaatsen</button>
-            </form>
-        <?php endif; ?>
+        <h3>Status Wijzigen</h3>
+        <form method="post">
+            <select name="status">
+                <?php foreach ($statusOpties as $waarde => $label): ?>
+                    <option value="<?= $waarde ?>" <?= $bestelling['status'] == $waarde ? 'selected' : '' ?>>
+                        <?= $label ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit">Bijwerken</button>
+        </form>
     </div>
 
     <footer class="footer">
@@ -73,4 +103,3 @@ if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
     </footer>
 </body>
 </html>
-            
