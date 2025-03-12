@@ -6,24 +6,16 @@ $ingelogd = isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true;
 $gebruikersnaam = $ingelogd ? $_SESSION['gebruiker'] : "Gast";
 $adres = $ingelogd && isset($_SESSION['adres']) ? $_SESSION['adres'] : "";
 
-// Zorg ervoor dat de winkelwagen is ingesteld
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
-}
-
-// Debugging: Toon de volledige sessie om te controleren wat er gebeurt
-// echo "<pre>"; print_r($_SESSION); echo "</pre>";
-
 // Controleer of het formulier is ingediend en voeg bestelling toe aan de sessie
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producten'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cart_data'])) {
     $_SESSION['cart'] = json_decode($_POST['cart_data'], true);
 }
 
-// Controleer of er producten in de winkelwagen zitten
-// if (empty($_SESSION['cart'])) {
-//     echo "<script>alert('Je winkelwagen is leeg!'); window.location.href='menu.php';</script>";
-//     exit;
-// }
+// Zorg ervoor dat de winkelwagen correct is ingesteld
+if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    echo "<script>alert('Je winkelwagen is leeg!'); window.location.href='menu.php';</script>";
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producten'])) {
     <div class="navbar">
         <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
         <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="window.location.href='order.php'">Bestelling Plaatsen</button>
+        <button onclick="window.location.href='orderCustomer.php'">Bestelling Plaatsen</button>
 
         <?php if ($ingelogd): ?>
             <button onclick="window.location.href='profiel.php'">👤 <?= htmlspecialchars($gebruikersnaam) ?></button>
@@ -53,25 +45,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producten'])) {
     <div class="container">
         <h2>Jouw Bestelling</h2>
 
-        <p><strong>Totaalprijs:</strong> €<?= number_format(array_sum(array_map(function($item) {
-            return $item['price'] * $item['quantity'];
-        }, $_SESSION['cart'])), 2, ',', '.') ?></p>
+        <!-- Toon winkelwagen producten -->
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Aantal</th>
+                <th>Prijs per stuk (€)</th>
+                <th>Totaal (€)</th>
+                <th>Extra Ingrediënten</th>
+            </tr>
+            <?php 
+            $totaalprijs = 0;
+            foreach ($_SESSION['cart'] as $item) : 
+                $totaalprijs += $item['price'] * $item['quantity'];
+            ?>
+                <tr>
+                    <td><?= htmlspecialchars($item['name']) ?></td>
+                    <td><?= $item['quantity'] ?></td>
+                    <td><?= number_format($item['price'], 2, ',', '.') ?> €</td>
+                    <td><?= number_format($item['price'] * $item['quantity'], 2, ',', '.') ?> €</td>
+                    <td><?= !empty($item['extra']) ? htmlspecialchars($item['extra']) : 'Geen extra' ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
 
+        <p><strong>Totaalprijs:</strong> €<?= number_format($totaalprijs, 2, ',', '.') ?></p>
+
+        <!-- Bestelformulier -->
         <form action="bestelling_bevestigd.php" method="post">
             <label for="naam">Naam:</label>
             <input type="text" name="naam" required value="<?= $ingelogd ? htmlspecialchars($gebruikersnaam) : '' ?>">
             
             <label for="adres">Adres:</label>
-            <input type="text" name="adres" required value="<?= $adres ?>" <?= $ingelogd ? 'readonly' : '' ?> >
+            <input type="text" name="adres" required value="<?= htmlspecialchars($adres) ?>" <?= $ingelogd ? 'readonly' : '' ?>>
             
-            <?php foreach ($_SESSION['cart'] as $product => $item): ?>
-                <input type="hidden" name="producten[<?= htmlspecialchars($product) ?>][name]" value="<?= htmlspecialchars($item['name']) ?>">
-                <input type="hidden" name="producten[<?= htmlspecialchars($product) ?>][quantity]" value="<?= $item['quantity'] ?>">
-                <input type="hidden" name="producten[<?= htmlspecialchars($product) ?>][price]" value="<?= $item['price'] ?>">
+            <!-- Winkelwagen naar verborgen velden voor doorgifte -->
+            <?php foreach ($_SESSION['cart'] as $index => $item): ?>
+                <input type="hidden" name="producten[<?= $index ?>][name]" value="<?= htmlspecialchars($item['name']) ?>">
+                <input type="hidden" name="producten[<?= $index ?>][quantity]" value="<?= $item['quantity'] ?>">
+                <input type="hidden" name="producten[<?= $index ?>][price]" value="<?= $item['price'] ?>">
+                <input type="hidden" name="producten[<?= $index ?>][extra]" value="<?= htmlspecialchars($item['extra']) ?>">
             <?php endforeach; ?>
-            
-            <input type="hidden" name="cart_data" value='<?= json_encode($_SESSION['cart']) ?>'>
-            
+
             <button type="submit">✅ Bestelling Plaatsen</button>
         </form>
     </div>

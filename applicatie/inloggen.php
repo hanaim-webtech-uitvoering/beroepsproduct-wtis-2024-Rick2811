@@ -56,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -86,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($foutmelding)): ?>
             <p class="error"><?= htmlspecialchars($foutmelding); ?></p>
         <?php endif; ?>
+        
         <form action="" method="POST">
             <label for="gebruikersnaam">Gebruikersnaam:</label>
             <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
@@ -95,6 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <button type="submit">Inloggen</button>
         </form>
+
+        <!-- Nieuw toegevoegd registratiegedeelte -->
+        <p>Heb je nog geen account? Klik hieronder om je te registreren.</p>
+        <button onclick="window.location.href='addaccount.php'">Account aanmaken</button>
     </div>
 
     <!-- Footer -->

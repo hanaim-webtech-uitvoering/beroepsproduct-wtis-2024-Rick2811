@@ -231,3 +231,70 @@ body {
     border-radius: 5px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 }
+
+.pizzeria-form {
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+.pizzeria-form h2 {
+    margin-bottom: 20px;
+}
+
+.pizzeria-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pizzeria-form label {
+    font-weight: bold;
+    text-align: left;
+}
+
+.pizzeria-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.pizzeria-form button {
+    background-color: #3f8920;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.pizzeria-form button:hover {
+    background-color: #51f31b;
+}
+
+.pizzeria-form .error {
+    color: red;
+    font-weight: bold;
+}
+
+.pizzeria-form .success {
+    color: green;
+    font-weight: bold;
+}
+
+.pizzeria-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+}
