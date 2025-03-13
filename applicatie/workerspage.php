@@ -47,7 +47,7 @@ $statusTekst = [
     <div class="navbar">
         <button onclick="window.location.href='index.php'">Home</button>
         <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="window.location.href='orderCustomer.php'">Bestelling Plaatsen</button>
+        <button onclick="window.location.href='orderCustomer.php'">Bestelling</button>
         <button onclick="window.location.href='inloggen.php'">inloggen</button>
     </div>
     

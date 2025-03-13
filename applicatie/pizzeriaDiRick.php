@@ -12,11 +12,13 @@
 <body>
     <div class="navbar">
         <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
+        <button onclick="window.location.href='orderCustomer.php'">Bestelling</button>
         <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="alert('Bestelling plaatsen...')">Bestelling Plaatsen</button>
         <button onclick="window.location.href='inloggen.php'">Inloggen</button>
     </div>
-    
+    <div class="info-container">
+        <a href="orderconfirmed.php" class="info-button">bestellingsstatus</a>
+    </div>
     <h1 class="welcome-text">Welkom bij Pizza di Rick - De keuze is reuze!</h1>
     
     <div class="slideshow-container">

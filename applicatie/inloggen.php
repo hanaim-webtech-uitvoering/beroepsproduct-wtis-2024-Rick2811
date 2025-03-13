@@ -45,7 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Redirect naar de juiste pagina
-            header('Location: pizzeriaDiRick.php');
+            if ($user['role'] === 'Personnel') {
+                header('Location: workerspage.php'); // Stuur door naar workerspagina
+            } else {
+                header('Location: pizzeriaDiRick.php'); // Stuur door naar normale klantpagina
+            }
             exit();
         } else {
             $foutmelding = "❌ Ongeldige gebruikersnaam of wachtwoord!";

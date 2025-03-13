@@ -298,3 +298,35 @@ body {
     color: white;
     border-radius: 5px;
 }
+
+
+.info-container {
+    position: fixed;
+    /* top: 20px;
+    right: 20px; */
+    z-index: 1000;
+}
+
+/* Stijl voor de rode cirkel met de "i" */
+.info-button {
+    margin-top: 100px;
+    margin-right: 100px;
+    display: flex;
+    align-items: left;
+    justify-content: center;
+    width: 250px;
+    background-color: red;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 50%;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+.info-button:hover {
+    transform: scale(1.1);
+}
