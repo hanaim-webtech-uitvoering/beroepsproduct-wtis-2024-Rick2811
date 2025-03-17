@@ -19,15 +19,23 @@ try {
 $ingelogd = isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true;
 $gebruikersnaam = $ingelogd ? $_SESSION['gebruiker'] : NULL;
 
+// Status opties
+$statusTekst = [
+    1 => "Aan begonnen",
+    2 => "Ready to go",
+    3 => "Onderweg"
+];
+
 // Controleer of er een bestelling is geplaatst en sla deze op
+$bestelling_gelukt = false;
+$bestelling_status = 1; // Standaardstatus = "Aan begonnen"
+$bestelling_id = null;
+$bestelde_producten = [];
+
 if (!empty($_SESSION['cart'])) {
     $naam = isset($_POST['naam']) ? $_POST['naam'] : "Gast";
     $adres = isset($_POST['adres']) ? $_POST['adres'] : "";
     $gebruiker = isset($_SESSION['gebruiker']) ? $_SESSION['gebruiker'] : NULL;
-    $bestelling_gelukt = false;
-    $bestelling_status = null;
-    $bestelling_id = null;
-    $bestelde_producten = [];
 
     try {
         // Start een transactie
@@ -35,7 +43,7 @@ if (!empty($_SESSION['cart'])) {
 
         // Voeg bestelling toe aan `Pizza_Order`
         $stmt = $pdo->prepare("INSERT INTO Pizza_Order (client_username, client_name, personnel_username, datetime, status, address) 
-                            VALUES (:client_username, :client_name, 'rdeboer', GETDATE(), 1, :address)");
+                               VALUES (:client_username, :client_name, 'rdeboer', GETDATE(), 1, :address)");
         $stmt->execute([
             ':client_username' => $gebruiker,
             ':client_name' => $naam,
@@ -48,7 +56,7 @@ if (!empty($_SESSION['cart'])) {
 
         // Voeg producten toe aan `Pizza_Order_Product`
         $stmt = $pdo->prepare("INSERT INTO Pizza_Order_Product (order_id, product_name, quantity) 
-                            VALUES (:order_id, :product_name, :quantity)");
+                               VALUES (:order_id, :product_name, :quantity)");
 
         foreach ($_SESSION['cart'] as $item) {
             $stmt->execute([
@@ -65,14 +73,12 @@ if (!empty($_SESSION['cart'])) {
 
         // Commit transactie
         $pdo->commit();
-
-        // Bestelling is gelukt
         $bestelling_gelukt = true;
 
         // Haal de status op van de bestelling
         $stmt = $pdo->prepare("SELECT status FROM Pizza_Order WHERE order_id = ?");
         $stmt->execute([$bestelling_id]);
-        $bestelling_status = $stmt->fetchColumn();
+        $bestelling_status = $stmt->fetchColumn() ?? 1; // Zorg ervoor dat status altijd een waarde heeft
 
         // Leeg de winkelwagen na succesvolle bestelling
         unset($_SESSION['cart']);
@@ -84,7 +90,7 @@ if (!empty($_SESSION['cart'])) {
     }
 } else {
     // Haal de laatst geplaatste bestelling op
-    $bestelling_id = isset($_SESSION['last_order_id']) ? $_SESSION['last_order_id'] : null;
+    $bestelling_id = $_SESSION['last_order_id'] ?? null;
 
     if ($bestelling_id) {
         // Haal bestelling informatie op uit de database
@@ -95,7 +101,7 @@ if (!empty($_SESSION['cart'])) {
         if ($bestelling) {
             $naam = $bestelling['client_name'];
             $adres = $bestelling['address'];
-            $bestelling_status = $bestelling['status'];
+            $bestelling_status = $bestelling['status'] ?? 1;
             $bestelling_gelukt = true;
 
             // Haal de bestelde producten op
@@ -139,8 +145,8 @@ if (!empty($_SESSION['cart'])) {
             <p><strong>Bestelling ID:</strong> <?= htmlspecialchars($bestelling_id) ?></p>
             <p><strong>Naam:</strong> <?= htmlspecialchars($naam) ?></p>
             <p><strong>Adres:</strong> <?= htmlspecialchars($adres) ?></p>
-            <p><strong>Status:</strong> <?= ($bestelling_status == 1) ? 'In behandeling' : 'Onbekend' ?></p>
-            <p style="color:blue;">ℹ️ Je kunt de bestelstatus later bekijken door op de bestelstatus-knop op de homepage te klikken.</p>
+            <p><strong>Status:</strong> <?= $statusTekst[$bestelling_status] ?? "Onbekend"; ?></p>
+
             <h3>Bestelde Producten</h3>
             <table border="1">
                 <tr>
@@ -149,8 +155,7 @@ if (!empty($_SESSION['cart'])) {
                 </tr>
                 <?php foreach ($bestelde_producten as $product): ?>
                     <tr>
-                    <td><?= isset($product['product_name']) ? htmlspecialchars($product['product_name']) : 'Onbekend product' ?></td>
-
+                        <td><?= htmlspecialchars($product['product_name']) ?></td>
                         <td><?= $product['quantity'] ?></td>
                     </tr>
                 <?php endforeach; ?>
