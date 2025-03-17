@@ -1,18 +1,9 @@
 <?php
 session_start();
 
-// Database configuratie
-$DB_HOST = "database_server"; 
-$DB_NAME = "pizzeria";        
-$DB_USER = "sa";              
-$DB_PASS = "abc123!@#";       
+include 'functions.php';
 
-try {
-    $pdo = new PDO("sqlsrv:server=$DB_HOST;Database=$DB_NAME;Encrypt=no", $DB_USER, $DB_PASS);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Databaseverbinding mislukt: " . $e->getMessage());
-}
+$pdo = connectToDatabase();
 
 $foutmelding = "";
 
@@ -21,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $wachtwoord = trim($_POST['wachtwoord'] ?? '');
 
     if (!empty($gebruikersnaam) && !empty($wachtwoord)) {
-        // ✅ Haal het adres op uit de `Pizza_Order` tabel
         $stmt = $pdo->prepare("
             SELECT u.username, u.password, u.role, po.address 
             FROM [User] u
@@ -32,23 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute(['username' => $gebruikersnaam]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && $wachtwoord === $user['password']) { // Tijdelijke wachtwoordcontrole
+        if ($user && $wachtwoord === $user['password']) { 
             $_SESSION['ingelogd'] = true;
             $_SESSION['gebruiker'] = $user['username'];
             $_SESSION['rol'] = $user['role'];
 
-            // ✅ Haal het adres uit de bestelling als het bestaat
             if (!empty($user['address'])) {
                 $_SESSION['adres'] = $user['address'];
             } else {
-                $_SESSION['adres'] = null; // Adres niet gevonden
+                $_SESSION['adres'] = null; 
             }
 
-            // Redirect naar de juiste pagina
             if ($user['role'] === 'Personnel') {
-                header('Location: workerspage.php'); // Stuur door naar workerspagina
+                header('Location: workerspage.php'); 
             } else {
-                header('Location: pizzeriaDiRick.php'); // Stuur door naar normale klantpagina
+                header('Location: pizzeriaDiRick.php'); 
             }
             exit();
         } else {
@@ -58,57 +46,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $foutmelding = "⚠ Vul alle velden in.";
     }
 }
+
+toonHeader('Inloggen');
 ?>
 
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inloggen</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-    <!-- Navbar -->
-    <div class="navbar">
-        <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
-        <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="window.location.href='order.php'">Bestelling Plaatsen</button>
-
-        <?php if (isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true): ?>
-            <button onclick="window.location.href='profiel.php'">👤 <?= htmlspecialchars($_SESSION['gebruiker']) ?></button>
-            <button onclick="window.location.href='uitloggen.php'">Uitloggen</button>
-        <?php else: ?>
-            <button onclick="window.location.href='inloggen.php'">Inloggen</button>
-        <?php endif; ?>
-    </div>
+<div class="container">
+    <h2>Inloggen</h2>
+    <?php if (!empty($foutmelding)): ?>
+        <p class="error"><?= htmlspecialchars($foutmelding); ?></p>
+    <?php endif; ?>
     
-    <div class="container">
-        <h2>Inloggen</h2>
-        <?php if (!empty($foutmelding)): ?>
-            <p class="error"><?= htmlspecialchars($foutmelding); ?></p>
-        <?php endif; ?>
+    <form action="" method="POST">
+        <label for="gebruikersnaam">Gebruikersnaam:</label>
+        <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
         
-        <form action="" method="POST">
-            <label for="gebruikersnaam">Gebruikersnaam:</label>
-            <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
-            
-            <label for="wachtwoord">Wachtwoord:</label>
-            <input type="password" id="wachtwoord" name="wachtwoord" required>
-            
-            <button type="submit">Inloggen</button>
-        </form>
+        <label for="wachtwoord">Wachtwoord:</label>
+        <input type="password" id="wachtwoord" name="wachtwoord" required>
+        
+        <button type="submit">Inloggen</button>
+    </form>
+    <p>Heb je nog geen account? Klik hieronder om je te registreren.</p>
+    <button onclick="window.location.href='addaccount.php'">Account aanmaken</button>
+</div>
 
-        <!-- Nieuw toegevoegd registratiegedeelte -->
-        <p>Heb je nog geen account? Klik hieronder om je te registreren.</p>
-        <button onclick="window.location.href='addaccount.php'">Account aanmaken</button>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 Pizzeria di Rick | <a href="privacystatement.php">Privacyverklaring</a></p>
-    </footer>
-
+<?php toonFooter(); ?>
 </body>
 </html>

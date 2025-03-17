@@ -1,5 +1,6 @@
 <?php
-    // Start PHP-script (optioneel voor toekomstige uitbreiding)
+
+    include 'functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -10,15 +11,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigatiebalk -->
-    <div class="navbar">
-        <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
-        <button onclick="alert('Menu geopend!')">Menu</button>
-        <button onclick="alert('Bestelling plaatsen...')">Bestelling Plaatsen</button>
-        <button onclick="window.location.href='inloggen.php'">Inloggen</button>
-    </div>
-    
-    <!-- Titel -->
+   
+    <?php toonNavbar(); ?>
+
+
     <h1 class="welcome-text">Privacyverklaring</h1>
     
     <!-- Privacyverklaring Tekst -->
@@ -92,18 +88,16 @@
 
     <script>
         function acceptPrivacy() {
-            window.location.href = "pizzeriaDiRick.php"; // Stuur door naar de homepagina
+            window.location.href = "pizzeriaDiRick.php"; 
         }
 
         function declinePrivacy() {
             alert("Je hebt de voorwaarden niet geaccepteerd. Je wordt nu van de pagina verwijderd.");
-            window.location.href = "https://www.google.com"; // Verwijder gebruiker van de pagina
+            window.location.href = "https://www.google.com"; 
         }
     </script>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 Pizzeria di Rick | <a href="privacystatement.php">Privacyverklaring</a></p>
-    </footer>
+
+    <?php toonFooter(); ?>
 </body>
 </html>

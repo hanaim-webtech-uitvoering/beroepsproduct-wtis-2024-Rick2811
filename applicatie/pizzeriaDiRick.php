@@ -1,5 +1,5 @@
 <?php
-    // Start PHP-script (optioneel voor toekomstige uitbreiding)
+include 'functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -10,12 +10,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="navbar">
-        <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
-        <button onclick="window.location.href='orderCustomer.php'">Bestelling</button>
-        <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="window.location.href='inloggen.php'">Inloggen</button>
-    </div>
+<?php toonNavbar(); ?>
+<!--  -->
     <div class="info-container">
         <a href="orderconfirmed.php" class="info-button">bestellingsstatus</a>
     </div>
@@ -35,14 +31,11 @@
             slideIndex++;
             if (slideIndex > slides.length) { slideIndex = 1; }
             slides[slideIndex - 1].style.display = "block";
-            setTimeout(showSlides, 3000); // Wissel elke 3 seconden
+            setTimeout(showSlides, 3000);
         }
         showSlides();
     </script>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2025 Pizzeria di Rick | <a href="privacystatement.php">Privacyverklaring</a></p>
-    </footer>
+    <?php toonFooter(); ?>
 </body>
 </html>

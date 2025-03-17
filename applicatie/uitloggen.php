@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-// Vernietig de sessie en stuur de gebruiker terug naar de homepagina
+include 'functions.php';
+
 session_unset();
 session_destroy();
 
@@ -20,12 +21,8 @@ exit;
 <body>
 
     <!-- Navbar -->
-    <div class="navbar">
-        <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
-        <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="window.location.href='order.php'">Bestelling Plaatsen</button>
-        <button onclick="window.location.href='inloggen.php'">Inloggen</button>
-    </div>
+    <?php toonNavbar(); ?>
+
 
     <div class="container">
         <h2>Je bent succesvol uitgelogd</h2>
@@ -33,8 +30,6 @@ exit;
         <button onclick="window.location.href='pizzeriaDiRick.php'">Terug naar Home</button>
     </div>
 
-    <footer class="footer">
-        <p>&copy; 2025 Pizzeria di Rick | <a href="privacystatement.php">Privacyverklaring</a></p>
-    </footer>
+    <?php toonFooter(); ?>
 </body>
 </html>
