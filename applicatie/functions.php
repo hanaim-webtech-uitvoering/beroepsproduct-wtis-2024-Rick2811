@@ -13,13 +13,15 @@ function connectToDatabase() {
         die("Databaseverbinding mislukt: " . $e->getMessage());
     }
 }
-
 function toonNavbar() {
     ?>
     <div class="navbar">
         <button onclick="window.location.href='pizzeriaDiRick.php'">Home</button>
         <button onclick="window.location.href='Menu.php'">Menu</button>
-        <button onclick="window.location.href='order.php'">Bestelling Plaatsen</button>
+
+        <?php if (!isset($_SESSION['ingelogd']) || $_SESSION['rol'] !== 'Personnel'): ?>
+            <button onclick="window.location.href='order.php'">Bestelling Plaatsen</button>
+        <?php endif; ?>
 
         <?php if (isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true): ?>
             <button onclick="window.location.href='uitloggen.php'">Uitloggen</button>
@@ -29,6 +31,7 @@ function toonNavbar() {
     </div>
     <?php
 }
+
 
 function toonFooter() {
     ?>
