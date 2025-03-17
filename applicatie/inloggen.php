@@ -22,7 +22,8 @@
             $stmt->execute(['username' => $gebruikersnaam]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($user && $wachtwoord === $user['password']) { 
+            if ($user && password_verify($wachtwoord, $user['password'])) {
+
                 $_SESSION['ingelogd'] = true;
                 $_SESSION['gebruiker'] = $user['username'];
                 $_SESSION['rol'] = $user['role'];
