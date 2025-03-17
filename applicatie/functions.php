@@ -20,7 +20,7 @@ function toonNavbar() {
         <button onclick="window.location.href='Menu.php'">Menu</button>
 
         <?php if (!isset($_SESSION['ingelogd']) || $_SESSION['rol'] !== 'Personnel'): ?>
-            <button onclick="window.location.href='order.php'">Bestelling Plaatsen</button>
+            <button onclick="window.location.href='ordercustomer.php'">Bestelling Plaatsen</button>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true): ?>
