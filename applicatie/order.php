@@ -49,13 +49,19 @@ $statusOpties = [
     3 => "Onderweg"
 ];
 
+$statusBericht = ""; // Variabele voor melding
+
 // Als de status wordt gewijzigd
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
     $nieuweStatus = $_POST['status'];
     $updateStmt = $pdo->prepare("UPDATE Pizza_Order SET status = :status WHERE order_id = :order_id");
     $updateStmt->execute(['status' => $nieuweStatus, 'order_id' => $order_id]);
-    header("Location: orderDetails.php?order_id=" . $order_id);
-    exit();
+
+    // Status succesvol bijgewerkt, toon melding
+    $statusBericht = "<p id='status-melding' style='color: green; font-weight: bold;'>✅ Status succesvol bijgewerkt!</p>";
+
+    // Werk de status in de $bestelling-array bij zodat de weergave direct verandert
+    $bestelling['status'] = $nieuweStatus;
 }
 ?>
 
@@ -66,6 +72,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bestelling Details | Pizzeria di Rick</title>
     <link rel="stylesheet" href="styles.css">
+    <script>
+        // JavaScript om de melding na 3 seconden te laten verdwijnen
+        function verbergMelding() {
+            let melding = document.getElementById("status-melding");
+            if (melding) {
+                setTimeout(() => {
+                    melding.style.display = "none";
+                }, 3000); // 3 seconden
+            }
+        }
+
+        window.onload = verbergMelding;
+    </script>
 </head>
 <body>
     <div class="navbar">
@@ -86,6 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
         </ul>
 
         <h3>Status Wijzigen</h3>
+
+        <?= $statusBericht ?> <!-- Hier wordt de melding weergegeven -->
+
         <form method="post">
             <select name="status">
                 <?php foreach ($statusOpties as $waarde => $label): ?>
