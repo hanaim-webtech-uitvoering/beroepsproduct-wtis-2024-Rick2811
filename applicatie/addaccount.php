@@ -10,7 +10,10 @@ $succesmelding = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gebruikersnaam = trim($_POST['gebruikersnaam'] ?? '');
-    $wachtwoord = password_hash(trim($_POST['wachtwoord'] ?? ''), PASSWORD_DEFAULT);
+    $wachtwoordInput = trim($_POST['wachtwoord'] ?? '');
+    if (!empty($wachtwoordInput)) {
+        $wachtwoord = password_hash($wachtwoordInput, PASSWORD_DEFAULT);
+    }
     $voornaam = trim($_POST['voornaam'] ?? '');
     $achternaam = trim($_POST['achternaam'] ?? '');
     $adres = trim($_POST['adres'] ?? '');

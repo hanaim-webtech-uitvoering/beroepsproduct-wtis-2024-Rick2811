@@ -2,7 +2,7 @@
 session_start();
 include 'functions.php';
 
-if (!isset($_SESSION['ingelogd']) || !$_SESSION['ingelogd']) {
+if (!isset($_SESSION['ingelogd']) || $_SESSION['rol'] !== 'Personnel') {
     header('Location: inloggen.php');
     exit();
 }
@@ -28,13 +28,16 @@ $stmt = $pdo->prepare("SELECT p.name, pop.quantity FROM Pizza_Order_Product pop
 $stmt->execute(['order_id' => $order_id]);
 $producten = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// 👇 Vervang de losse aanroep door niets, of laat het weg
+$statusBericht = ""; 
+
+// Voeg deze array toe voor de dropdown
 $statusOpties = [
+    0 => "In wachtrij",
     1 => "Aan begonnen",
     2 => "Ready to go",
     3 => "Onderweg"
 ];
-
-$statusBericht = ""; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
     $nieuweStatus = $_POST['status'];
@@ -58,6 +61,7 @@ toonHeader('Bestelling Details');
     <p><strong>Klant:</strong> <?= htmlspecialchars($bestelling['client_name']) ?></p>
     <p><strong>Adres:</strong> <?= htmlspecialchars($bestelling['address']) ?></p>
     <p><strong>Datum & Tijd:</strong> <?= htmlspecialchars($bestelling['datetime']) ?></p>
+    <p><strong>Huidige Status:</strong> <?= htmlspecialchars(getStatusText($bestelling['status'])) ?></p>
 
     <h3>Bestelde Producten</h3>
     <ul>

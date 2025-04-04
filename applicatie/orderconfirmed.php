@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 include 'functions.php';
 
 $pdo = connectToDatabase();
@@ -8,21 +7,14 @@ $pdo = connectToDatabase();
 $ingelogd = isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true;
 $gebruikersnaam = $ingelogd ? $_SESSION['gebruiker'] : NULL;
 
-$statusTekst = [
-    1 => "Aan begonnen",
-    2 => "Ready to go",
-    3 => "Onderweg"
-];
-
 $bestelling_gelukt = false;
 $bestelling_status = 1; 
 $bestelling_id = null;
-$bestelde_producten = [];
 
 if (!empty($_SESSION['cart'])) {
-    $naam = isset($_POST['naam']) ? $_POST['naam'] : "Gast";
-    $adres = isset($_POST['adres']) ? $_POST['adres'] : "";
-    $gebruiker = isset($_SESSION['gebruiker']) ? $_SESSION['gebruiker'] : NULL;
+    $naam = $_POST['naam'] ?? "Gast";
+    $adres = $_POST['adres'] ?? "";
+    $gebruiker = $_SESSION['gebruiker'] ?? NULL;
 
     try {
         $pdo->beginTransaction();
@@ -36,7 +28,7 @@ if (!empty($_SESSION['cart'])) {
         ]);
 
         $bestelling_id = $pdo->lastInsertId();
-        $_SESSION['last_order_id'] = $bestelling_id; 
+        $_SESSION['last_order_id'] = $bestelling_id;
 
         $stmt = $pdo->prepare("INSERT INTO Pizza_Order_Product (order_id, product_name, quantity) 
                                VALUES (:order_id, :product_name, :quantity)");
@@ -76,7 +68,7 @@ toonHeader('Bestelling Bevestiging');
     <h2>Bestelling Bevestiging</h2>
     <?php if ($bestelling_gelukt): ?>
         <p>Bedankt voor je bestelling! Je bestelnummer is <?= htmlspecialchars($bestelling_id) ?>.</p>
-        <p>De status van je bestelling is: <?= htmlspecialchars($statusTekst[$bestelling_status]) ?>.</p>
+        <p>De    van je bestelling is: <?= htmlspecialchars(getStatusText($bestelling_status)) ?>.</p>
     <?php else: ?>
         <p>Er is iets misgegaan met je bestelling. Probeer het opnieuw.</p>
     <?php endif; ?>

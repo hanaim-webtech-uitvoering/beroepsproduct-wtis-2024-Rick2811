@@ -16,6 +16,7 @@ include 'functions.php';
 <!--  -->
     <div class="info-container">
         <a href="orderconfirmed.php" class="info-button">bestellingsstatus</a>
+        <a href="myorder.php" class="info-button">bestelgeschiedenis</a>
     </div>
     <h1 class="welcome-text">Welkom bij Pizza di Rick - De keuze is reuze!</h1>
     

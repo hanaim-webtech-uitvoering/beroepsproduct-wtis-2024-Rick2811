@@ -55,4 +55,19 @@ function toonHeader($title) {
     <?php toonNavbar(); ?>
     <?php
 }
+
+
+
+function getStatusText($status) {
+    $statusTeksten = [
+        0 => "In wachtrij",
+        1 => "Aan begonnen",
+        2 => "Ready to go",
+        3 => "Onderweg"
+    ];
+    return $statusTeksten[$status] ?? 'Onbekend';
+}
+
 ?>
+
+

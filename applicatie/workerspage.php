@@ -15,12 +15,6 @@ $gebruikersnaam = $_SESSION['gebruiker'];
 $stmt = $pdo->query("SELECT order_id, client_name, datetime, status FROM Pizza_Order ORDER BY datetime DESC");
 $bestellingen = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$statusTekst = [
-    1 => "Aan begonnen",
-    2 => "Ready to go",
-    3 => "Onderweg"
-];
-
 toonHeader('Dashboard');
 ?>
 
@@ -32,7 +26,7 @@ toonHeader('Dashboard');
                 <p><strong>Bestelnummer:</strong> <?= htmlspecialchars($bestelling['order_id']); ?></p>
                 <p><strong>Klantnaam:</strong> <?= htmlspecialchars($bestelling['client_name']); ?></p>
                 <p><strong>Datum & Tijd:</strong> <?= htmlspecialchars($bestelling['datetime']); ?></p>
-                <p><strong>Status:</strong> <?= $statusTekst[$bestelling['status']] ?? "Onbekend"; ?></p>
+                <p><strong>Status:</strong> <?= htmlspecialchars(getStatusText($bestelling['status'])) ?></p>
             </div>
         <?php endforeach; ?>
     </div>
