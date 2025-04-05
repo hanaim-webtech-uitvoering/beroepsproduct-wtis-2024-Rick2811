@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
         if (!empty($straat) && !empty($huisnummer) && !empty($postcode) && !empty($plaats)) {
             $adres = "$straat $huisnummer, $postcode, $plaats";
         } else {
-            // Stop met verwerken, maar laat pagina wel zien zonder crash
             $bestelling_gelukt = false;
         }
     }
@@ -64,6 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
             $pdo->commit();
             $bestelling_gelukt = true;
 
+            // 🧼 Winkelwagen legen na succesvolle bestelling
+            unset($_SESSION['cart']);
+
             $stmt = $pdo->prepare("SELECT status FROM Pizza_Order WHERE order_id = ?");
             $stmt->execute([$bestelling_id]);
             $bestelling_status = $stmt->fetchColumn();
@@ -95,7 +97,7 @@ toonHeader('Bestelling Bevestiging');
         <p>Status van je bestelling: <strong><?= htmlspecialchars(getStatusText($bestelling_status)) ?></strong>.</p>
     <?php elseif ($bestelling_id): ?>
         <p>📦 Laatste bestelling: <strong>#<?= htmlspecialchars($bestelling_id) ?></strong></p>
-        <p>Status: <strong><?= htmlspecialchars(getStatusText($bestelling_status)) ?></strong></p>
+        <p>Status: <strong><?= htmlspecialchars(getStatusText($bestelling_status)) ?></strong>.</p>
     <?php else: ?>
         <p>Je hebt nog geen bestelling geplaatst.</p>
     <?php endif; ?>
