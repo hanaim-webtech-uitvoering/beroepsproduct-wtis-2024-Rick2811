@@ -28,10 +28,9 @@ $stmt = $pdo->prepare("SELECT p.name, pop.quantity FROM Pizza_Order_Product pop
 $stmt->execute(['order_id' => $order_id]);
 $producten = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// 👇 Vervang de losse aanroep door niets, of laat het weg
+
 $statusBericht = ""; 
 
-// Voeg deze array toe voor de dropdown
 $statusOpties = [
     0 => "In wachtrij",
     1 => "Aan begonnen",

@@ -32,7 +32,6 @@ function toonNavbar() {
     <?php
 }
 
-
 function toonFooter() {
     ?>
     <footer class="footer">
@@ -55,8 +54,6 @@ function toonHeader($title) {
     <?php toonNavbar(); ?>
     <?php
 }
-
-
 
 function getStatusText($status) {
     $statusTeksten = [

@@ -20,9 +20,7 @@ exit;
 </head>
 <body>
 
-    <!-- Navbar -->
     <?php toonNavbar(); ?>
-
 
     <div class="container">
         <h2>Je bent succesvol uitgelogd</h2>

@@ -85,7 +85,6 @@
     </div>
     </div>
 
-
     <script>
         function acceptPrivacy() {
             window.location.href = "pizzeriaDiRick.php"; 
@@ -93,10 +92,9 @@
 
         function declinePrivacy() {
             alert("Je hebt de voorwaarden niet geaccepteerd. Je wordt nu van de pagina verwijderd.");
-            window.location.href = "https://www.google.com"; 
+            window.location.href = "https://www.youtube.com/watch?v=xvFZjo5PgG0"; 
         }
     </script>
-
 
     <?php toonFooter(); ?>
 </body>

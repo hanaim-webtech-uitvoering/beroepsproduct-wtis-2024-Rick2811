@@ -244,3 +244,6 @@ if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
 |--------------|----------------|----------------|
 | Klant        | klant          | ikwilpizza     |
 | Personeel    | owner          | wachtwoord     |
+
+
+TIP kijk eens wat er gebeurd als je de privacy verklaring niet accepteert:)

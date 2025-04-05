@@ -11,7 +11,6 @@ $bestelling_gelukt = false;
 $bestelling_status = 1;
 $bestelling_id = null;
 
-// Alleen bestelling verwerken als het een formulier POST is
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
     $naam = $_POST['naam'] ?? 'Gast';
     $adres = '';
@@ -19,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
     if ($ingelogd) {
         $adres = $_POST['adres'] ?? '';
     } else {
-        // Gasten: adres samenstellen uit losse velden
         $straat = trim($_POST['straat'] ?? '');
         $huisnummer = trim($_POST['huisnummer'] ?? '');
         $postcode = trim($_POST['postcode'] ?? '');
@@ -32,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
         }
     }
 
-    // Alleen verdergaan als adres goed gevuld is
     if (!empty($adres)) {
         try {
             $pdo->beginTransaction();
@@ -63,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
             $pdo->commit();
             $bestelling_gelukt = true;
 
-            // 🧼 Winkelwagen legen na succesvolle bestelling
             unset($_SESSION['cart']);
 
             $stmt = $pdo->prepare("SELECT status FROM Pizza_Order WHERE order_id = ?");
@@ -76,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SESSION['cart'])) {
     }
 }
 
-// Als er geen nieuwe bestelling is geplaatst, toon laatste
+
 if (!$bestelling_gelukt) {
     $bestelling_id = $_SESSION['last_order_id'] ?? null;
 
