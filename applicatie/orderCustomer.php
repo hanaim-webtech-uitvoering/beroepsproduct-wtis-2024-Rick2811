@@ -81,12 +81,26 @@ toonHeader('Bestelling Overzicht');
         <p><strong>Totaalprijs:</strong> €<?= number_format($totaalprijs, 2, ',', '.') ?></p>
 
         <form action="orderconfirmed.php" method="post">
-            <label for="naam">Naam:</label>
-            <input type="text" name="naam" required value="<?= $ingelogd ? htmlspecialchars($gebruikersnaam) : '' ?>">
-            
-            <label for="adres">Adres:</label>
-            <input type="text" name="adres" required value="<?= htmlspecialchars($adres) ?>" <?= $ingelogd ? 'readonly' : '' ?>>
-            
+        <label for="naam">Naam:</label>
+<input type="text" name="naam" required pattern="[A-Za-z ]+" title="Alleen letters en spaties toegestaan" value="<?= $ingelogd ? htmlspecialchars($gebruikersnaam) : '' ?>">
+
+
+            <?php if ($ingelogd): ?>
+                <label for="adres">Adres:</label>
+                <input type="text" name="adres" required value="<?= htmlspecialchars($adres) ?>" readonly>
+            <?php else: ?>
+                <label for="straat">Straat:</label>
+                <input type="text" id="straat" name="straat" required pattern="[A-Za-z ]+" title="Alleen letters en spaties toegestaan">
+
+                <label for="huisnummer">Huisnummer:</label>
+                <input type="text" id="huisnummer" name="huisnummer" required pattern="[A-Za-z0-9]+" title="Alleen letters en cijfers toegestaan">
+                <label for="postcode">Postcode:</label>
+                <input type="text" id="postcode" name="postcode" required pattern="[A-Za-z0-9]+" title="Alleen letters en cijfers toegestaan">
+
+                <label for="plaats">Plaats:</label>
+                <input type="text" id="plaats" name="plaats" required pattern="[A-Za-z ]+" title="Alleen letters en spaties toegestaan">
+            <?php endif; ?>
+
             <?php foreach ($_SESSION['cart'] as $index => $item): ?>
                 <input type="hidden" name="producten[<?= $index ?>][name]" value="<?= htmlspecialchars($item['name']) ?>">
                 <input type="hidden" name="producten[<?= $index ?>][quantity]" value="<?= $item['quantity'] ?>">

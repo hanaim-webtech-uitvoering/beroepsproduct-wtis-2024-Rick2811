@@ -5,25 +5,41 @@ include 'functions.php';
 $pdo = connectToDatabase();
 
 $ingelogd = isset($_SESSION['ingelogd']) && $_SESSION['ingelogd'] === true;
-$gebruikersnaam = $ingelogd ? $_SESSION['gebruiker'] : NULL;
+$gebruikersnaam = $ingelogd ? $_SESSION['gebruiker'] : null;
 
 $bestelling_gelukt = false;
-$bestelling_status = 1; 
+$bestelling_status = 1;
 $bestelling_id = null;
 
 if (!empty($_SESSION['cart'])) {
-    $naam = $_POST['naam'] ?? "Gast";
-    $adres = $_POST['adres'] ?? "";
-    $gebruiker = $_SESSION['gebruiker'] ?? NULL;
+    $naam = $_POST['naam'] ?? 'Gast';
+    $adres = '';
+
+    if ($ingelogd) {
+        $adres = $_POST['adres'] ?? '';
+    } else {
+        // Gasten: adres samenstellen uit losse velden
+        $straat = trim($_POST['straat'] ?? '');
+        $huisnummer = trim($_POST['huisnummer'] ?? '');
+        $postcode = trim($_POST['postcode'] ?? '');
+        $plaats = trim($_POST['plaats'] ?? '');
+
+        if (!empty($straat) && !empty($huisnummer) && !empty($postcode) && !empty($plaats)) {
+            $adres = "$straat $huisnummer, $postcode, $plaats";
+        } else {
+            die("vul alle adresvelden in.");
+        }
+    }
 
     try {
         $pdo->beginTransaction();
 
         $stmt = $pdo->prepare("INSERT INTO Pizza_Order (client_username, client_name, personnel_username, datetime, status, address) 
-                               VALUES (:client_username, :client_name, 'rdeboer', GETDATE(), 1, :address)");
+                               VALUES (:client_username, :client_name, 'rdeboer', GETDATE(), :status, :address)");
         $stmt->execute([
-            ':client_username' => $gebruiker,
+            ':client_username' => $gebruikersnaam,
             ':client_name' => $naam,
+            ':status' => $bestelling_status,
             ':address' => $adres
         ]);
 
@@ -49,7 +65,7 @@ if (!empty($_SESSION['cart'])) {
         $bestelling_status = $stmt->fetchColumn();
     } catch (Exception $e) {
         $pdo->rollBack();
-        die("Bestelling mislukt: " . $e->getMessage());
+        die("❌ Bestelling mislukt: " . $e->getMessage());
     }
 } else {
     $bestelling_id = $_SESSION['last_order_id'] ?? null;
@@ -67,8 +83,8 @@ toonHeader('Bestelling Bevestiging');
 <div class="container">
     <h2>Bestelling Bevestiging</h2>
     <?php if ($bestelling_gelukt): ?>
-        <p>Bedankt voor je bestelling! Je bestelnummer is <?= htmlspecialchars($bestelling_id) ?>.</p>
-        <p>De    van je bestelling is: <?= htmlspecialchars(getStatusText($bestelling_status)) ?>.</p>
+        <p>Bedankt voor je bestelling! Je bestelnummer is <strong><?= htmlspecialchars($bestelling_id) ?></strong>.</p>
+        <p>Status van je bestelling: <strong><?= htmlspecialchars(getStatusText($bestelling_status)) ?></strong>.</p>
     <?php else: ?>
         <p>Er is iets misgegaan met je bestelling. Probeer het opnieuw.</p>
     <?php endif; ?>

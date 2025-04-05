@@ -11,16 +11,22 @@ $succesmelding = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gebruikersnaam = trim($_POST['gebruikersnaam'] ?? '');
     $wachtwoordInput = trim($_POST['wachtwoord'] ?? '');
-    if (!empty($wachtwoordInput)) {
-        $wachtwoord = password_hash($wachtwoordInput, PASSWORD_DEFAULT);
-    }
+    $wachtwoord = !empty($wachtwoordInput) ? password_hash($wachtwoordInput, PASSWORD_DEFAULT) : '';
     $voornaam = trim($_POST['voornaam'] ?? '');
     $achternaam = trim($_POST['achternaam'] ?? '');
-    $adres = trim($_POST['adres'] ?? '');
+
+    $straat = trim($_POST['straat'] ?? '');
+    $huisnummer = trim($_POST['huisnummer'] ?? '');
+    $postcode = trim($_POST['postcode'] ?? '');
+    $plaats = trim($_POST['plaats'] ?? '');
+
+    $adres = "$straat $huisnummer, $postcode, $plaats";
     $datetime = date('Y-m-d H:i:s'); 
     $status = 0; 
 
-    if (!empty($gebruikersnaam) && !empty($wachtwoord) && !empty($voornaam) && !empty($achternaam) && !empty($adres)) {
+    if (!empty($gebruikersnaam) && !empty($wachtwoord) && !empty($voornaam) && !empty($achternaam)
+        && !empty($straat) && !empty($huisnummer) && !empty($postcode) && !empty($plaats)) {
+        
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM [User] WHERE username = :username");
         $stmt->execute(['username' => $gebruikersnaam]);
         $gebruiker_bestaat = $stmt->fetchColumn();
@@ -76,25 +82,35 @@ toonHeader('Account Aanmaken');
     <?php if (!empty($succesmelding)): ?>
         <p class="success"><?= htmlspecialchars($succesmelding); ?></p>
     <?php endif; ?>
-
+    
     <form action="" method="POST">
-        <label for="gebruikersnaam">Gebruikersnaam:</label>
-        <input type="text" id="gebruikersnaam" name="gebruikersnaam" required>
+    <label for="gebruikersnaam">Gebruikersnaam:</label>
+    <input type="text" id="gebruikersnaam" name="gebruikersnaam" required pattern="[A-Za-z]+" title="Alleen letters toegestaan">
 
-        <label for="wachtwoord">Wachtwoord:</label>
-        <input type="password" id="wachtwoord" name="wachtwoord" required>
+    <label for="wachtwoord">Wachtwoord:</label>
+    <input type="password" id="wachtwoord" name="wachtwoord" required>
 
-        <label for="voornaam">Voornaam:</label>
-        <input type="text" id="voornaam" name="voornaam" required>
+    <label for="voornaam">Voornaam:</label>
+    <input type="text" id="voornaam" name="voornaam" required pattern="[A-Za-z]+" title="Alleen letters toegestaan">
 
-        <label for="achternaam">Achternaam:</label>
-        <input type="text" id="achternaam" name="achternaam" required>
+    <label for="achternaam">Achternaam:</label>
+    <input type="text" id="achternaam" name="achternaam" required pattern="[A-Za-z ]+" title="Alleen letters en spaties toegestaan">
 
-        <label for="adres">Adres:</label>
-        <input type="text" id="adres" name="adres" required>
+    <label for="straat">Straat:</label>
+    <input type="text" id="straat" name="straat" required pattern="[A-Za-z ]+" title="Alleen letters en spaties toegestaan">
 
-        <button type="submit">Account Aanmaken</button>
-    </form>
+    <label for="huisnummer">Huisnummer:</label>
+    <input type="text" id="huisnummer" name="huisnummer" required pattern="[A-Za-z0-9]+" title="Alleen letters en cijfers toegestaan">
+
+    <label for="postcode">Postcode:</label>
+    <input type="text" id="postcode" name="postcode" required pattern="[A-Za-z0-9]+" title="Alleen letters en cijfers toegestaan">
+
+    <label for="plaats">Plaats:</label>
+    <input type="text" id="plaats" name="plaats" required pattern="[A-Za-z ]+" title="Alleen letters en spaties toegestaan">
+
+    <button type="submit">Account Aanmaken</button>
+</form>
+
 </div>
 
 <?php toonFooter(); ?>
