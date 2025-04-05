@@ -96,7 +96,7 @@ toonHeader('Bestelling Bevestiging');
         <p>✅ Bedankt voor je bestelling! Je bestelnummer is <strong><?= htmlspecialchars($bestelling_id) ?></strong>.</p>
         <p>Status van je bestelling: <strong><?= htmlspecialchars(getStatusText($bestelling_status)) ?></strong>.</p>
     <?php elseif ($bestelling_id): ?>
-        <p>📦 Laatste bestelling: <strong>#<?= htmlspecialchars($bestelling_id) ?></strong></p>
+        <p>Laatste bestelling: <strong>#<?= htmlspecialchars($bestelling_id) ?></strong></p>
         <p>Status: <strong><?= htmlspecialchars(getStatusText($bestelling_status)) ?></strong>.</p>
     <?php else: ?>
         <p>Je hebt nog geen bestelling geplaatst.</p>
