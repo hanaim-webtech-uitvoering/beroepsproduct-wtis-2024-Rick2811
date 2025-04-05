@@ -92,7 +92,7 @@
 
         function declinePrivacy() {
             alert("Je hebt de voorwaarden niet geaccepteerd. Je wordt nu van de pagina verwijderd.");
-            window.location.href = "https://www.youtube.com/watch?v=xvFZjo5PgG0"; 
+            window.location.href = "https://www.youtube.com/watch?v=Oy_hPonFO9g"; 
         }
     </script>
 

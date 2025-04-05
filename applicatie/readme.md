@@ -211,28 +211,20 @@ Bij een succesvolle aanval door gebroken toegangscontrole kan een aanvaller:
 **Voorbeeld van rolgebaseerde toegangscontrole:**
 
 ```php
-// Controleer of de gebruiker een 'Admin' rol heeft
 if ($_SESSION['rol'] !== 'Admin') {
-    // Log de ongeautoriseerde toegangspoging
     error_log("Ongeautoriseerde toegangspoging door gebruiker: " . $_SESSION['gebruikersnaam']);
-    // Stuur de gebruiker naar de toegang geweigerd pagina
     header('Location: toegang_geweigerd.php');
     exit();
 }
 Voorbeeld van sessiebeheer bij gevoelige acties:
-// Start de sessie
 session_start();
 
-// Controleer of de gebruiker is ingelogd
 if (!isset($_SESSION['ingelogd']) || $_SESSION['ingelogd'] !== true) {
-    // Stuur de gebruiker naar de inlogpagina
     header('Location: inloggen.php');
     exit();
 }
 
-// Controleer of de CSRF-token geldig is
 if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-    // Ongeldige CSRF-token
     die("Ongeldige aanvraag.");
 }
 ```
