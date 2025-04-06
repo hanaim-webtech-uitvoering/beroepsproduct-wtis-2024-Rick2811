@@ -13,6 +13,7 @@ function connectToDatabase() {
         die("Databaseverbinding mislukt: " . $e->getMessage());
     }
 }
+
 function toonNavbar() {
     ?>
     <div class="navbar">

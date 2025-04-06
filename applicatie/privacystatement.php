@@ -17,7 +17,7 @@
 
     <h1 class="welcome-text">Privacyverklaring</h1>
     
-    <!-- Privacyverklaring Tekst -->
+
     <div class="privacy-container">
         <h2>Privacyverklaring - Pizzeria di Rick</h2>
 
@@ -72,12 +72,11 @@
         <p>📍 <strong>Pizzeria di Rick</strong><br>
         📧 <strong>R.schoenmaker2@student.han.nl</strong><br>
         📞 <strong>06-12345678</strong><br>
-        🌐 <strong>http://localhost:8080/pizzeriaDiRick.php</strong></p>
+        🌐 <strong>http:/localhost:8080/pizzeriaDiRick.php</strong></p>
 
         <p><strong>📌 Deze privacyverklaring kan worden gewijzigd. Controleer deze pagina regelmatig voor updates.</strong></p>
     
 
-    <!-- Akkoord/Niet akkoord sectie -->
     <div class="agreement-container">
         <p>Door op "Ik ga akkoord" te klikken, accepteer je onze privacyvoorwaarden.</p>
         <button onclick="acceptPrivacy()" class="agree-button">Ik ga akkoord</button>
